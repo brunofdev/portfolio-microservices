@@ -11,16 +11,24 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 @Configuration
 public class RabbitMQConfig {
-    private static final String QUEUE_NAME = "email-welcome.queue";
+
+
+    public static final String QUEUE_WELCOME_EMAIL = "user.welcome.email";
+
+    public static final String QUEUE_USER_DELETED = "user-deleted-feedback-cleanup.queue";
 
     @Bean
-    public Queue queue(){
-        return new Queue(QUEUE_NAME, true);
+    public Queue welcomeEmailQueue() {
+        return new Queue(QUEUE_WELCOME_EMAIL, true);
     }
 
+
     @Bean
-    public MessageConverter jsonMessageConverter(){
+    public Queue userDeletedQueue() {
+        return new Queue(QUEUE_USER_DELETED, true);
+    }
+    @Bean
+    public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
-
 }

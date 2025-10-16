@@ -31,14 +31,12 @@ public class GlobalExceptionHandler {
         logger.error("Dados de usuário não encontrados: ", ex);
         return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, "User Data Unavailable", ex.getMessage());
     }
-    @ExceptionHandler(ApiResponseIsEmpty.class)
-
+    @ExceptionHandler(FeedbackNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleFeedbackNotFound(FeedbackNotFoundException ex) {
         logger.error("Feedback procurado pelo id enviado não encontrado: ", ex);
         return buildErrorResponse(HttpStatus.NOT_FOUND, "Feedback not Found", ex.getMessage());
     }
     @ExceptionHandler(ApiResponseIsEmpty.class)
-
     public ResponseEntity<ApiResponse<Object>> handleApiResponseIsEmpty(ApiResponseIsEmpty ex) {
         logger.error("A resposta da api do user-service esta vazia ", ex);
         return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, "ApiResponse from user-service Data is Empty", ex.getMessage());

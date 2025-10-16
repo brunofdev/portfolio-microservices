@@ -1,4 +1,4 @@
-version: '3.8'
+# A tag 'version' e obsoleta e foi removida para seguir as praticas atuais.
 
 services:
   # ===============================================
@@ -7,51 +7,76 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    restart: unless-stopped # Reinicia o container automaticamente se ele falhar
     ports:
       - "5672:5672"   # Porta para os servicos se conectarem
       - "15672:15672" # Porta para o painel de administracao web
+    healthcheck:
+      # Espera o RabbitMQ estar pronto para aceitar conexoes antes de iniciar outros servicos
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   postgres-user-db:
     image: postgres:15
     container_name: postgres-user-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: user_service_db
     ports:
-      - "5432:5432" # Expõe a porta do Postgres para o seu PC
+      - "5432:5432" # Expoe a porta do Postgres para o seu PC
+    healthcheck:
+      # Espera o banco de dados estar pronto para aceitar conexoes
+      test: ["CMD-SHELL", "pg_isready -U admin -d user_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   postgres-feedback-db:
     image: postgres:15
     container_name: postgres-feedback-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: feedback_service_db
     ports:
       - "5433:5432" # Mapeia para a porta 5433 no seu PC para nao conflitar com a outra
+    healthcheck:
+      # Espera o banco de dados estar pronto para aceitar conexoes
+      test: ["CMD-SHELL", "pg_isready -U admin -d feedback_service_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ===============================================
   # MICROSSERVICOS
   # ===============================================
   user-service:
-    build: ./user-service2 # Diz para construir a imagem a partir da pasta ./user-service
+    build: ./user-service2
     container_name: user-service
+    restart: unless-stopped
     ports:
       - "8802:8802"
     environment:
-      - SPRING_PROFILES_ACTIVE=local # Ativa o application-local.properties
+      - SPRING_PROFILES_ACTIVE=local
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
-      - postgres-user-db
-      - rabbitmq
+      postgres-user-db:
+        condition: service_healthy # So inicia depois que o banco estiver saudavel
+      rabbitmq:
+        condition: service_healthy # So inicia depois que o RabbitMQ estiver saudavel
 
   auth-service:
     build: ./authservice
     container_name: auth-service
+    restart: unless-stopped
     ports:
       - "8803:8803"
     environment:
@@ -62,6 +87,7 @@ services:
   processador-feedbacks:
     build: ./processadorfeedbacks
     container_name: processador-feedbacks
+    restart: unless-stopped
     ports:
       - "8804:8804"
     environment:
@@ -71,11 +97,13 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   feedback-service:
     build: ./feedbackservice
     container_name: feedback-service
+    restart: unless-stopped
     ports:
       - "8805:8805"
     environment:
@@ -85,13 +113,17 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
-      - postgres-feedback-db
-      - user-service
-      - rabbitmq
+      postgres-feedback-db:
+        condition: service_healthy
+      user-service:
+        condition: service_started # Espera o container do user-service iniciar
+      rabbitmq:
+        condition: service_healthy
 
   mailservice:
     build: ./mailservice
     container_name: mailservice
+    restart: unless-stopped
     ports:
       - "8806:8806"
     environment:
@@ -101,11 +133,13 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
 
   api-gateway:
     build: ./apigateway
     container_name: api-gateway
+    restart: unless-stopped
     ports:
       - "8080:8080" # A porta principal de entrada da sua aplicacao
     environment:
