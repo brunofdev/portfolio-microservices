@@ -1,0 +1,7 @@
+com\user_service\validation\UserValidation.class
+com\user_service\entity\User.class
+com\user_service\service\UserService.class
+com\user_service\UserServiceApplication.class
+com\user_service\mapper\UserMapper.class
+com\user_service\dto\UserSignupDTO.class
+com\user_service\repository\UserRepository.class
