@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # ===============================================
+  # INFRAESTRUTURA
+  # ===============================================
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Porta para os servicos se conectarem
+      - "15672:15672" # Porta para o painel de administracao web
+
+  postgres-user-db:
+    image: postgres:15
+    container_name: postgres-user-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: user_service_db
+    ports:
+      - "5432:5432" # Expõe a porta do Postgres para o seu PC
+
+  postgres-feedback-db:
+    image: postgres:15
+    container_name: postgres-feedback-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: feedback_service_db
+    ports:
+      - "5433:5432" # Mapeia para a porta 5433 no seu PC para nao conflitar com a outra
+
+  # ===============================================
+  # MICROSSERVICOS
+  # ===============================================
+  user-service:
+    build: ./user-service2 # Diz para construir a imagem a partir da pasta ./user-service
+    container_name: user-service
+    ports:
+      - "8802:8802"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local # Ativa o application-local.properties
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
+    depends_on:
+      - postgres-user-db
+      - rabbitmq
+
+  auth-service:
+    build: ./authservice
+    container_name: auth-service
+    ports:
+      - "8803:8803"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    depends_on:
+      - user-service
+
+  processador-feedbacks:
+    build: ./processadorfeedbacks
+    container_name: processador-feedbacks
+    ports:
+      - "8804:8804"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
+    depends_on:
+      - rabbitmq
+
+  feedback-service:
+    build: ./feedbackservice
+    container_name: feedback-service
+    ports:
+      - "8805:8805"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
+    depends_on:
+      - postgres-feedback-db
+      - user-service
+      - rabbitmq
+
+  mailservice:
+    build: ./mailservice
+    container_name: mailservice
+    ports:
+      - "8806:8806"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
+    depends_on:
+      - rabbitmq
+
+  api-gateway:
+    build: ./apigateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080" # A porta principal de entrada da sua aplicacao
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+    depends_on:
+      - auth-service
+      - user-service
+      - feedback-service
+      - processador-feedbacks
