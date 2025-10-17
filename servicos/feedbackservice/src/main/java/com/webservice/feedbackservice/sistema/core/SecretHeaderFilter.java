@@ -8,31 +8,48 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
-@Order(1) // A anotação @Order(1) garante que este filtro execute ANTES de outros filtros do Spring
+@Order(1) // Garante que este filtro execute ANTES do Spring Security
 public class SecretHeaderFilter implements Filter {
 
-    // Injeta o valor da chave secreta do seu arquivo application.properties
-    // É uma prática melhor do que deixar a chave "hardcoded" no código.
     @Value("${api.internal.secret}")
-    private String expectedSecret;
+    private String internalApiSecret;
+
+    // A UNICA lista de excecoes: rotas de monitoramento
+    private static final List<String> ACTUATOR_PATHS = List.of(
+            "/actuator"
+    );
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String secretHeader = httpRequest.getHeader("X-Internal-Secret");
+        String path = httpRequest.getRequestURI();
 
-        // Regra rigorosa: se o aperto de mão secreto estiver correto, pode passar.
-        if (expectedSecret != null && expectedSecret.equals(secretHeader)) {
+        // 1. Se for um endpoint do Actuator (Prometheus), DEIXA PASSAR.
+        if (isActuatorPath(path)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        // 2. Para TODAS AS OUTRAS rotas (publicas ou protegidas),
+        // EXIGE o header secreto.
+        String secretHeader = httpRequest.getHeader("X-Internal-Secret");
+        if (internalApiSecret != null && internalApiSecret.equals(secretHeader)) {
+            // A chamada veio do Gateway. E confiavel.
             chain.doFilter(request, response);
         } else {
-            // Senão, bloqueia, não importa a URL.
+            // A chamada veio DIRETAMENTE. BLOQUEIA.
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            httpResponse.getWriter().write("Acesso direto não permitido.");
+            httpResponse.getWriter().write("Acesso direto nao permitido.");
         }
+    }
+
+    private boolean isActuatorPath(String path) {
+        return ACTUATOR_PATHS.stream().anyMatch(path::startsWith);
     }
 }

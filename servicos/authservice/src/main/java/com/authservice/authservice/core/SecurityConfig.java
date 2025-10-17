@@ -15,6 +15,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Desabilita CSRF, essencial para APIs REST
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/**").permitAll()
                         // Permite acesso público e anônimo ao nosso endpoint de login
                         .requestMatchers("/api/auth/login").permitAll()
                         // Qualquer outra rota neste serviço será bloqueada (boa prática de segurança)

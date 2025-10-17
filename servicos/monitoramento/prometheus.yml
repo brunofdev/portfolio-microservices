@@ -1,0 +1,16 @@
+# servicos/config-monitoring/prometheus.yml
+
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'spring-microsservicos'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'api-gateway:8080'
+          - 'user-service:8802'
+          - 'auth-service:8803'
+          - 'processador-feedbacks:8804'
+          - 'feedback-service:8805'
+          - 'mailservice:8806'

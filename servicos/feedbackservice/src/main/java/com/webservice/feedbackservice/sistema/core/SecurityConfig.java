@@ -23,6 +23,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/**").permitAll()
                         // Deixa TODAS as rotas passarem pelo Spring Security,
                         // pois o SecretHeaderFilter já protege o serviço contra acesso externo.
                         .anyRequest().permitAll()
