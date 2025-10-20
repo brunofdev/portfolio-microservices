@@ -7,11 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="apigateway" />
-        <module name="user-service" />
-        <module name="feedbackservice" />
         <module name="processadorfeedbacks" />
         <module name="authservice" />
         <module name="mailservice" />
+        <module name="eureka" />
+        <module name="user-service" />
+        <module name="feedbackservice" />
       </profile>
     </annotationProcessing>
   </component>
@@ -19,6 +20,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="apigateway" options="-parameters" />
       <module name="authservice" options="-parameters" />
+      <module name="eureka" options="-parameters" />
       <module name="feedbackservice" options="-parameters" />
       <module name="mailservice" options="-parameters" />
       <module name="processadorfeedbacks" options="-parameters" />

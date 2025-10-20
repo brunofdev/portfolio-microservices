@@ -6,10 +6,7 @@ import com.user_service.dto.UserCredentialDTO;
 import com.user_service.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +29,10 @@ public class InternalUserController {
     public ResponseEntity<ApiResponse<List<UserDTO>>> getUsersDatils(@RequestBody List<String> userNames){
         List<UserDTO> foundUsers = userService.getUsersByUsernames(userNames);
         return ResponseEntity.ok().body(ApiResponse.success("Recurso encontrado", foundUsers));
+    }
+    @GetMapping("/by-username/{userName}")
+    public ResponseEntity<ApiResponse<UserDTO>> getUserDetailsByUsername(@PathVariable String userName){
+        UserDTO userDTO = userService.findUserDtoByUserName(userName); //adicionar o medo de verificacao do service aqui e remover o true
+        return ResponseEntity.ok().body(ApiResponse.success("Usuario encotrado", userDTO));
     }
 }

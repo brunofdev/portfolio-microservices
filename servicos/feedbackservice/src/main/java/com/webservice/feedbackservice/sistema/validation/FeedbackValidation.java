@@ -1,8 +1,10 @@
 package com.webservice.feedbackservice.sistema.validation;
 
 import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
+import com.webservice.feedbackservice.sistema.dto.UserDTO;
 import com.webservice.feedbackservice.sistema.dto.apiresponse.ApiResponse;
 import com.webservice.feedbackservice.sistema.exceptions.ApiResponseIsEmpty;
+import com.webservice.feedbackservice.sistema.exceptions.UserDatailsNotFoundExcpetion;
 import com.webservice.feedbackservice.sistema.exceptions.UserNameIsEmptyException;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +21,12 @@ public class FeedbackValidation {
              throw new UserNameIsEmptyException("A lista de usernames está vazia");
         }
     }
-    public void validateFeedback(FeedbackDTO dto) {
+    public void validateFeedback(FeedbackDTO dto, UserDTO userDTO) {
         if(dto.getUserName().trim().isBlank()){
             throw new UserNameIsEmptyException("Username não pode ser vazio");
+        }
+        if (userDTO == null){
+            throw new UserDatailsNotFoundExcpetion("O usuário subtraido do jwt, não existe no dominio de usuarios");
         }
     }
     public void validateApiResponse(ApiResponse apiResponse){

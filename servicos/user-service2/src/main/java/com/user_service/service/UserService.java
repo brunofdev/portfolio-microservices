@@ -40,10 +40,16 @@ public class UserService {
         this.userEmailProducer = userRabbitProducer;
         this.userFeedbackProducer = userFeedbackProducer;
     }
-    public User findUserByUserName(String userName){
+    private User findUserByUserName(String userName){
         return userRepository.findByUserNameIgnoreCase(userName).
                 orElseThrow(() -> new UserNotFoundException("Nome de usuário não encontrado"));
     }
+    public UserDTO findUserDtoByUserName(String userName){
+        User user = userRepository.findByUserNameIgnoreCase(userName).
+                orElseThrow(() -> new UserNotFoundException("Nome de usuário não encontrado"));
+        return userMapper.mapUserToUserDTO(user);
+    }
+
     private UserDTO userHaveEmails(String userName){
         User user = userRepository.findByUserNameIgnoreCase(userName).orElseThrow(() -> new UserDontFoundException("Usuario não encontrado por userName"));
         if (user.getEmail().isEmpty()){

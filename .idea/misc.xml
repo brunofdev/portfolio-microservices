@@ -16,6 +16,7 @@
         <option value="$PROJECT_DIR$/servicos/mailservice/pom.xml" />
         <option value="$PROJECT_DIR$/servicos/feedbackservice/pom.xml" />
         <option value="$PROJECT_DIR$/servicos/authservice/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/eureka/pom.xml" />
       </list>
     </option>
   </component>

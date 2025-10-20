@@ -47,6 +47,15 @@ services:
       timeout: 5s
       retries: 5
 
+  eureka:
+    build: ./eureka
+    container_name: eureka
+    restart: unless-stopped
+    ports:
+    - "8761:8761" # Expõe a porta do Eureka para o seu PC
+    environment:
+    - SPRING_PROFILES_ACTIVE=local
+
   # ===============================================
   # TORRE DE MONITORAMENTO (NOVO)
   # ===============================================
@@ -188,3 +197,4 @@ services:
       - feedback-service
       - processador-feedbacks
       - zipkin
+      - eureka
