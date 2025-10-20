@@ -10,10 +10,16 @@
         <option value="$PROJECT_DIR$/serviços/mailservice/pom.xml" />
         <option value="$PROJECT_DIR$/serviços/processadorfeedbacks/pom.xml" />
         <option value="$PROJECT_DIR$/serviços/user-service2/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/apigateway/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/user-service2/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/processadorfeedbacks/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/mailservice/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/feedbackservice/pom.xml" />
+        <option value="$PROJECT_DIR$/servicos/authservice/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_24" default="true" project-jdk-name="24" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" project-jdk-name="24" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

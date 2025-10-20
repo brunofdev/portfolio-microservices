@@ -8,15 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeedbackEmailCreate {
 
-    private static final String queue_name = "feedback.created.email.queue";
+    private static final String queue_newFeedbackNotify = "feedback.created.email.queue";
+    private static final String queue_notifyUser = "feedback.notify.user.queue";
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
     public void sendToQueueRabbit(FeedbackDTO feedbackDTO){
-        System.out.println("Enviando mensagem para a fila '" + queue_name + "'...");
-        rabbitTemplate.convertAndSend(queue_name, feedbackDTO);
-        System.out.println("Mensagem enviada com sucesso!");
+        System.out.println("Enviando mensagem para a fila '" + queue_newFeedbackNotify + "'... e fila "
+                + queue_notifyUser);
+        rabbitTemplate.convertAndSend(queue_newFeedbackNotify, feedbackDTO);
+        rabbitTemplate.convertAndSend(queue_notifyUser, feedbackDTO);
+        System.out.println("Mensagens enviadas com sucesso!");
     }
 
 }

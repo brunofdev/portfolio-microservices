@@ -121,7 +121,10 @@ services:
       - "8804:8804"
     environment:
       - SPRING_PROFILES_ACTIVE=local
-      # ... (configuracao do rabbitmq) ...
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -137,7 +140,10 @@ services:
       - "8805:8805"
     environment:
       - SPRING_PROFILES_ACTIVE=local
-      # ... (configuracao do rabbitmq) ...
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
       postgres-feedback-db:
         condition: service_healthy
@@ -157,7 +163,10 @@ services:
       - "8806:8806"
     environment:
       - SPRING_PROFILES_ACTIVE=local
-      # ... (configuracao do rabbitmq) ...
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_VIRTUAL_HOST=/
     depends_on:
       rabbitmq:
         condition: service_healthy

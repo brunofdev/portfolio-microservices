@@ -69,8 +69,11 @@ public class FeedbackService {
         return feedbackRepository.findDistinctUserNames();
     }
     public List<UsersWithFeedbackDTO> listAllWithUserDetails() {
-        List<String> userNames = feedbackRepository.findDistinctUserNames();
         List<Feedback> feedbacks = feedbackRepository.findAll();
+        if(feedbacks.isEmpty()){
+            throw new FeedbackNotFoundException("Não existem Feedbacks registrados no sistema");
+        }
+        List<String> userNames = feedbackRepository.findDistinctUserNames();
         List<UserDTO> userDetails = requestUserDetailsForUserService(userNames);
         feedbackValidation.validateUserNames(userNames);
         return feedbackMapper.mapUsersWithFeedbackDTO(userDetails, feedbacks);

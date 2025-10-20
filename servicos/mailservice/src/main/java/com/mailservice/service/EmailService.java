@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class EmailService {
      * Envia um e-mail de notificação para o administrador (você) sobre um novo feedback recebido.
      * @param feedback O DTO do feedback recebido da fila do RabbitMQ.
      */
-    public void sendNewFeedbackNotification(FeedbackDTO feedback) {
+    public void sendNewFeedbackNotificationToHost(FeedbackDTO feedback) {
         // 1. Prepara o WebClient para se comunicar com a API do Brevo
         WebClient webClient = webClientBuilder.baseUrl("https://api.brevo.com/v3").build();
 
@@ -100,7 +99,50 @@ public class EmailService {
                 .toBodilessEntity()
                 .block();
 
-        System.out.println("E-mail de notificação de feedback enviado para o host.");
+    }
+    public void sendNewFeedbackNotificationToUser(UserDTO userDTO) {
+        // 1. Prepara o WebClient para se comunicar com a API do Brevo
+        WebClient webClient = webClientBuilder.baseUrl("https://api.brevo.com/v3").build();
+
+        // 2. Define o conteúdo do e-mail de notificação
+        String subject = "Feedback postado — obrigado!";
+
+        // HTML
+        String htmlContent = String.format("""
+        <html><body>
+            <h2>Olá %s,</h2>
+            <p>Você acabou de deixar um novo feedback para <strong>Bruno Fraga Dev</strong>.</p>
+            <p><strong>Isso faz toda a diferença e me ajuda a evoluir!</strong></p>
+            <p>Continue contribuindo e ajudando outras pessoas a se desenvolverem. 💪</p>
+        </body></html>
+        """, userDTO.getNome()
+        );
+
+        // 3. Monta o corpo da requisição para a API do Brevo
+        Map<String, Object> body = Map.of(
+                "sender", Map.of(
+                        "email", senderEmail,   // precisa estar configurado no Brevo
+                        "name", "Bruno Fraga Dev"
+                ),
+                "to", List.of(Map.of(
+                        "email", userDTO.getEmail(),
+                        "name", userDTO.getNome()
+                )),
+                "subject", subject,
+                "htmlContent", htmlContent
+        );
+
+        // 4. Faz a chamada POST para a API do Brevo
+        webClient.post()
+                .uri("/smtp/email")
+                .header("api-key", apiKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+
+        System.out.printf("✅ E-mail de notificação enviado para %s (%s)%n", userDTO.getNome(), userDTO.getEmail());
     }
 }
 

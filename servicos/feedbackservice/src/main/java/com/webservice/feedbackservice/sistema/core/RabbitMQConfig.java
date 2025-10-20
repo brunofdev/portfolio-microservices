@@ -12,6 +12,7 @@ public class RabbitMQConfig {
     // Nomes originais das filas
     private static final String QUEUE1_NAME = "feedback-create.queue";
     private static final String QUEUE2_NAME = "feedback.created.email.queue";
+    private static final String QUEUE3_NAME = "feedback.notify.user.queue";
 
     /**
      * Fila para criação de feedback
@@ -27,6 +28,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue feedbackEmailQueue() {
         return new Queue(QUEUE2_NAME, true); // durável
+    }
+
+    @Bean
+    public Queue feedbackNotifyUser() {
+        return new Queue(QUEUE3_NAME, true); // durável
     }
 
     /**

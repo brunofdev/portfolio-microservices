@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleInvalidCredentials(InvalidCredentialsException ex) {
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid Credentials", ex.getMessage());
     }
+
+    @ExceptionHandler(UserDontHaveEmailRegistered.class)
+    public ResponseEntity<ApiResponse<Object>> handleUserDontHaveEmailRegistered(UserDontHaveEmailRegistered ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Email dont registered on system", ex.getMessage());
+    }
     // Trata email já existente
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ApiResponse<Object>> handleUsernameAlreadyExists(EmailAlreadyExistsException ex) {

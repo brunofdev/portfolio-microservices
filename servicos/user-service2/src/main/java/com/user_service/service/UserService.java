@@ -1,5 +1,6 @@
 package com.user_service.service;
 
+import com.user_service.dto.FeedbackDTO;
 import com.user_service.dto.UserCredentialDTO;
 import com.user_service.dto.UserDTO;
 import com.user_service.dto.UserSignupDTO;
@@ -7,6 +8,7 @@ import com.user_service.entity.UserRole;
 import com.user_service.entity.User;
 import com.user_service.exceptions.InvalidCredentialsException;
 import com.user_service.exceptions.UserDontFoundException;
+import com.user_service.exceptions.UserDontHaveEmailRegistered;
 import com.user_service.exceptions.UserNotFoundException;
 import com.user_service.mapper.UserMapper;
 import com.user_service.messaging.producer.UserEmailProducer;
@@ -41,6 +43,17 @@ public class UserService {
     public User findUserByUserName(String userName){
         return userRepository.findByUserNameIgnoreCase(userName).
                 orElseThrow(() -> new UserNotFoundException("Nome de usuário não encontrado"));
+    }
+    private UserDTO userHaveEmails(String userName){
+        User user = userRepository.findByUserNameIgnoreCase(userName).orElseThrow(() -> new UserDontFoundException("Usuario não encontrado por userName"));
+        if (user.getEmail().isEmpty()){
+            throw new UserDontHaveEmailRegistered("O usuario não possui um email cadastrado");
+        }
+        return userMapper.mapUserToUserDTO(user);
+    }
+    public void sendEmailIfPostedFeedback(FeedbackDTO feedbackDTO){
+        UserDTO userDTO = userHaveEmails(feedbackDTO.getUserName());
+        userEmailProducer.sendToQueueNotifyPostedFeedback(userDTO);
     }
     private void sendWelcomeEmailIfApplicable(UserDTO userDTO){
         if(StringUtils.hasText(userDTO.getEmail())) {

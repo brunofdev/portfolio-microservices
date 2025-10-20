@@ -18,14 +18,12 @@ public class SecretHeaderFilter implements Filter {
     @Value("${api.internal.secret}")
     private String internalApiSecret;
 
-    // Lista de caminhos publicos (como /register) que nao precisam do header
-    // pois o Gateway ja os protege.
-    private static final List<String> PUBLIC_API_PATHS = List.of(
-            "/api/users/register"
+
+   /* private static final List<String> PUBLIC_API_PATHS = List.of(
             // Adicione outras rotas publicas se necessario
     );
+    */
 
-    // ADICIONE ESTA NOVA LISTA
     // Lista de caminhos de monitoramento que devem ser liberados
     private static final List<String> ACTUATOR_PATHS = List.of(
             "/actuator"
@@ -44,11 +42,13 @@ public class SecretHeaderFilter implements Filter {
             return;
         }
 
-        // 2. Se for um endpoint publico da API, DEIXA PASSAR.
+        /*
+        2. Se for um endpoint publico da API, DEIXA PASSAR.
         if (isPublicApiPath(path)) {
             chain.doFilter(request, response);
             return;
         }
+         */
 
         // 3. Para todas as outras rotas (como /internal), exija o header secreto.
         String secretHeader = httpRequest.getHeader("X-Internal-Secret");
@@ -62,9 +62,11 @@ public class SecretHeaderFilter implements Filter {
         }
     }
 
+    /*
     private boolean isPublicApiPath(String path) {
         return PUBLIC_API_PATHS.stream().anyMatch(path::startsWith);
     }
+    */
 
     // ADICIONE ESTE NOVO METODO
     private boolean isActuatorPath(String path) {
