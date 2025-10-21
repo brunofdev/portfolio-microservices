@@ -112,8 +112,8 @@ Abra um terminal e execute:
 1.2 cd .\portfolio-microservices\  
 1.3 cd servicos  
 
-# 🧱 2️⃣ Construir o Ambiente (Build)   
-### **PRECISA TER O DOCKER INSTALADO**  
+### 2️⃣ Construir o Ambiente (Build)   
+**PRECISA TER O DOCKER INSTALADO**  
 
 Já estando dentro da pasta "servicos" no terminal que estiver utilizando, rode:  
 
