@@ -4,57 +4,58 @@
 
 ## 🧭 VISÃO GERAL
 
-Este projeto é uma **arquitetura de microsserviços completa, robusta e observável**, construída com **Spring Boot** e **Spring Cloud**.  
-O sistema simula um ambiente real de produção para **coletar e gerenciar feedbacks de usuários**, incluindo:
+Este projeto apresenta uma **arquitetura de microsserviços completa, robusta e observável**, desenvolvida com **Spring Boot** e **Spring Cloud**.  
+O sistema simula um ambiente real de produção voltado para **coleta e gerenciamento de feedbacks de usuários**, oferecendo:
 
-- Cadatstro e autenticação de usuários gerando tokens(JWT)
-- Postagem/criação de feedbacks
-- Gerenciamento de endpoints centralizados por um gateway central com regras de segurança especificas
-- Envio assíncrono de e-mails com RabbitMQ  
-- Autorização baseada em permissões (Roles)
+- Cadastro e autenticação de usuários com geração de tokens **JWT**  
+- Criação e gerenciamento de **feedbacks**  
+- **Gateway centralizado** com regras de segurança e roteamento inteligente  
+- Envio assíncrono de e-mails utilizando **RabbitMQ**  
+- Controle de acesso baseado em **perfis de permissão (Roles)**  
 
-A arquitetura é **100% conteinerizada** com **Docker Compose**, e inclui uma **stack de observabilidade completa** com **Prometheus**, **Grafana** e **Zipkin**.
+Toda a arquitetura é **100% conteinerizada** via **Docker Compose**, com uma **stack completa de observabilidade** composta por **Prometheus**, **Grafana** e **Zipkin**.
 
 ---
 
 ## ⚙️ PRINCIPAIS FUNCIONALIDADES
 
-- 🧩 **API Gateway Centralizado** — único ponto de entrada (api-gateway) para todo o tráfego externo.  
+- 🧩 **API Gateway Centralizado** — ponto único de entrada para todo o tráfego externo.  
 - 🔐 **Autenticação e Autorização JWT** — fluxo completo de registro, login e controle de acesso.  
-- 🧑‍💼 **Segurança por Permissão (Roles)** — separação entre rotas `ADMIN` e `USER`.  
-- 📨 **Comunicação Assíncrona** — usa **RabbitMQ** para tarefas desacopladas (como envio de e-mails).  
-- 🌐 **Descoberta de Serviços** — com **Netflix Eureka** para registro dinâmico.  
-- 📊 **Observabilidade Completa (3 pilares)**:
+- 🧑‍💼 **Segurança baseada em Roles** — separação entre rotas `ADMIN` e `USER`.  
+- 📨 **Comunicação Assíncrona** — mensageria com **RabbitMQ** para envio de e-mails desacoplado.  
+- 🌐 **Descoberta de Serviços** — registro dinâmico com **Netflix Eureka**.  
+- 📊 **Observabilidade Completa (3 pilares)**:  
   - **Métricas:** Prometheus + Grafana  
   - **Rastreamento:** Zipkin  
   - **Logs:** Micrometer + Trace IDs  
-- 🛡️ **Resiliência:** impede acesso direto aos serviços internos e valida entidades antes da gravação no banco.
+- 🛡️ **Resiliência e Segurança:** impede acesso direto aos serviços internos e valida entidades antes da persistência.
+- Padronização de respostas de todos os endpoints.
 
 ---
 
 ## 🏗️ ARQUITETURA DO SISTEMA
 
-O projeto roda como um **ecossistema de múltiplos contêineres Docker interconectados**:
+O sistema é executado em um **ecossistema de múltiplos contêineres Docker interconectados**, conforme estrutura abaixo:
 
 ### 🔧 Serviços Principais
-1. **api-gateway** → Roteamento, autenticação (JWT), roles e balanceamento de carga.  
+1. **api-gateway** → Roteamento, autenticação JWT, roles e balanceamento de carga.  
 2. **eureka-server** → Descoberta e registro de serviços.  
-3. **user-service** → CRUD de usuários e dados de autenticação.  
+3. **user-service** → CRUD de usuários e autenticação.  
 4. **auth-service** → Validação de credenciais e emissão de tokens JWT.  
-5. **feedback-service** → Gerenciamento de feedbacks (validação de usuário + permissões).  
-6. **mailservice** → Worker assíncrono que envia e-mails via API externa (Brevo).
+5. **feedback-service** → Gerenciamento de feedbacks (com validação de usuários e permissões).  
+6. **mailservice** → Worker assíncrono responsável por envio de e-mails via API externa (Brevo).
 
 ### 🗄️ Infraestrutura de Suporte
 7. **postgres-user-db** → Banco de dados do `user-service`.  
 8. **postgres-feedback-db** → Banco de dados do `feedback-service`.  
-9. **rabbitmq** → Broker de mensagens assíncronas.
+9. **rabbitmq** → Broker de mensagens assíncronas.  
 
 ### 🧠 Observabilidade
 10. **prometheus** → Coleta e armazena métricas.  
-11. **grafana** → Visualiza métricas e dashboards.  
-12. **zipkin** → Rastreia requisições distribuídas entre serviços.
+11. **grafana** → Visualização e dashboards.  
+12. **zipkin** → Rastreamento distribuído entre serviços.  
 
-> 💡 Toda a configuração de rede, variáveis de ambiente e dependências já está integrada no `docker-compose.yml`.
+> 💡 Toda a configuração de rede, variáveis de ambiente e dependências já está definida no `docker-compose.yml`.
 
 ---
 
@@ -72,7 +73,7 @@ O projeto roda como um **ecossistema de múltiplos contêineres Docker intercone
 - Spring Security  
 - JWT (JSON Web Token)  
 
-### 💾 Dados
+### 💾 Banco de Dados
 - Spring Data JPA  
 - PostgreSQL  
 
@@ -95,25 +96,174 @@ O projeto roda como um **ecossistema de múltiplos contêineres Docker intercone
 
 ## ▶️ COMO EXECUTAR O PROJETO
 
-> ⚡ Tudo é orquestrado automaticamente pelo `docker-compose.yml`.
+### ✅ Requisitos
+- Docker instalado e ativo  
+- IDE (recomendado: IntelliJ IDEA)  
+- Git instalado  
+
+> ⚡ Tudo é orquestrado automaticamente pelo arquivo `docker-compose.yml`.
+
+---
 
 ### 1️⃣ Clonar o Repositório
-Abrir um terminal (Por exemplo, pelo próprio Intelij, IDE que eu utilizo)
-Navega até a pasta que deseja criar o projeto e rode:
-1 - git clone https://github.com/seu-usuario/seu-repositorio.git
-2 - cd seu-repositorio/serviços
-3 - Sincroneze e baixe as dependencias de cada microserviço através do mavem (Clicar com o direito em cima do arquvio POM) de cada microserviço.
+Abra um terminal e execute:  
 
-🧱 2️⃣ Construir o Ambiente (Build)
-# Verifica se o Docker está ativo
-**PRECISA TER O DOCKER INSTALADO**
+git clone https://github.com/seu-usuario/seu-repositorio.git  
+cd seu-repositorio/servicos  
 
-# Remove containers e volumes antigos para evitar conflito
-docker-compose down -v
 
-# Faz o build das imagens Docker (recria do zero)
-docker-compose up --build 
+# 🧱 2️⃣ Construir o Ambiente (Build)  
+Verifica se o Docker está ativo  
+**PRECISA TER O DOCKER INSTALADO**  
 
-Geralmente o processo leva em torno de 10 minutos até que todos os serviços liguem e estejam disponiveis para testes.
-Lembrando que o serviço de email, não enviara emails reais, pois a apikey do brevo (aplicação de email que utilizamos) é pessoal e intransferivel.
+Remove containers e volumes antigos para evitar conflito  
+docker-compose down -v  
 
+Faz o build das imagens Docker (recria do zero)  
+Rode o comando a baixo na pasta em que o docker-compose.yml encontra-se:  
+docker-compose up --build   
+obs: as vezes é necessario ligar manualmente os containers na aba "containers" do Docker Hub  
+  
+Geralmente o processo leva em torno de 10 minutos até que todos os serviços liguem e estejam disponiveis para testes.  
+Lembrando que o serviço de email, não enviara emails reais, pois a apikey do brevo (aplicação de email que utilizamos) é pessoal e intransferivel.  
+  
+Documentação de Testes da API (Ambiente Local)  
+Este guia descreve como testar os endpoints da arquitetura de microsserviços rodando localmente via Docker Compose.  
+  
+URL Base de Todas as Requisições: http://localhost:8080 (Todas as chamadas devem ser feitas para o API Gateway)  
+  
+## TESTES  
+----------------------------------------------------------------  
+1. Rotas Públicas (Não exigem autenticação)  
+1.1. Cadastrar Novo Usuário  
+Cria um novo usuário   
+Obs: Para criar um usuario com permissão de admin, adicione na requisição dentro do campo "name" o valor @#$ADMIN$#@, por exemplo:  
+
+Método post para URL: http://localhost:8080/api/users/register  
+Body:  
+{  
+  "name": "Adm Paulo",  
+  "userName": "teste@#$ADMIN$#@", <--- Isso é uma regra que implementei para facilitar a criação de um usuário com permissão de Administrador, Apenas para teste.  
+  "password": "Itried1997@@",   
+  "email": "dwq@gmail.com"  
+}  
+
+Usuario com permissão  User:  
+Método: POST  
+
+URL: http://localhost:8080/api/users/register  
+  
+Corpo (Body) -> raw -> JSON:  
+  
+JSON  
+  
+{  
+  "name": "Usuario Teste Docker",  
+  "userName": "dockertest",  
+  "password": "senhaforte123@",  
+  "email": "teste@email.com"  
+}  
+Resposta Esperada: 201 Created  
+  
+----------------------------------------------------------------  
+# 1.2. Fazer Login  
+Autentica um usuário e retorna um token JWT.  
+  
+Método: POST  
+  
+URL: http://localhost:8080/api/auth/login  
+  
+Corpo (Body) -> raw -> JSON:  
+  
+-- JSON  
+  
+{  
+  "userName": "dockertest",  
+  "password": "senhaforte123@"  
+}  
+Resposta Esperada: 200 OK (Contendo o token e a role).  
+A resposta contém um JWT, que será utilizado em requisições que exigem autenticação  
+  
+-- Exemplo de retorno da Api:  
+  
+{  
+    "status": true,  
+    "message": "Usuário autenticado com sucesso",  
+    "dados": {  
+        "token": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInN1YiI6IlRFU1RFRSIsImlhdCI6MTc2MTA2NDA3OSwiZXhwIjoxNzYxMDY0OTc5fQ.JDLBXulCFF3YE2HL7iXSOQFKO5jrT0Tat0dALt7K-Kk",  
+        "userResponseDTO": {  
+            "username": "TESTEE",  
+            "role": "USER"  
+        }  
+    }  
+}  
+  
+  
+----------------------------------------------------------------  
+  
+Ação: Copie o token da resposta para usar nos testes seguintes.  
+  
+1.3. Listar Todos os Feedbacks  
+Busca a lista pública de feedbacks.  
+  
+Método: GET  
+  
+URL: http://localhost:8080/api/feedback/getallfeedbacks  
+  
+Resposta Esperada: 200 OK  
+  
+- Não é exigido JWT aqui nesta requisição.  
+----------------------------------------------------------------  
+2. Rotas Protegidas (Exigem Autenticação)  
+Para todas as requisições abaixo, vá até a aba "Authorization" no Postman, selecione "Bearer Token" e cole o JWT obtido no login.  
+----------------------------------------------------------------  
+  
+2.1. Criar um Novo Feedback (Permissão: USER ou ADMIN)  
+Método: POST  
+  
+URL: http://localhost:8080/api/feedback/create  
+  
+Corpo (Body) -> raw -> JSON:    
+  
+JSON  
+  
+{  
+  "userFeedback": "Testando o fluxo de feedback no Docker!",  
+  "userRating": 5  
+}  
+Resposta Esperada: 201 Created.  
+----------------------------------------------------------------  
+  
+2.2. Listar Todos os Usuários (Permissão: ADMIN)  
+Nota: Você deve estar logado com um usuário que tenha a role "ADMIN".   
+  
+  
+Método: GET  
+  
+URL: http://localhost:8080/api/users/getusers  
+  
+Resposta Esperada: 200 OK (com a lista de usuários).  
+  
+2.3. Deletar um Feedback (Permissão: ADMIN)  
+Nota: Você deve estar logado com um usuário que tenha a role "ADMIN".  
+    
+Método: DELETE  
+  
+URL: http://localhost:8080/api/feedback/deletefeedback/{id} (Ex: http://localhost:8080/api/feedback/deletefeedback/1)  
+  
+Resposta Esperada: 200 OK.   
+  
+3. Teste de Segurança (Acesso Direto Negado)  
+Este teste deve falhar. Ele prova que seus microsserviços internos estão protegidos pelo SecretHeaderFilter e não podem ser acessados diretamente.  
+  
+3.1. Tentativa de Acesso Direto ao user-service  
+Método: GET  
+  
+URL: http://localhost:8802/api/users/getusers (Note que estamos usando a porta direta do user-service, não a porta 8080 do Gateway).  
+  
+Resposta Esperada: 403 Forbidden  
+  
+Corpo da Resposta (Esperado): Acesso direto nao permitido.  
+  
+Se você receber o erro 403, seu filtro de segurança está funcionando perfeitamente!  
+  
