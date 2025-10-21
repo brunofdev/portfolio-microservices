@@ -270,8 +270,8 @@ Se você receber o erro 403, seu filtro de segurança está funcionando perfeita
 
 # Acessos de Infraestrutura: (Containers precisam estar ligados)  
   
-Grafana ->  
-Prometheus ->  
-Zipkin -> 
-Eureka -> 
-  
+Grafana -> http://localhost:3000 acesso: admin / admin  
+Prometheus -> http://localhost:9090  
+Zipkin -> http://localhost:9411/zipkin/  
+Eureka -> http://localhost:8761  
+RabbitMq -> [http://localhost:8761](http://localhost:15672/#/)  acesso: guest / guest  
