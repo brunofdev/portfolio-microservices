@@ -1,4 +1,4 @@
-# 🚀 PLATAFORMA DE MICROSSERVIÇOS PARA FEEDBACK DE CLIENTES
+#  PLATAFORMA DE MICROSSERVIÇOS PARA FEEDBACK DE CLIENTES
 
 ---
 
@@ -108,34 +108,33 @@ O sistema é executado em um **ecossistema de múltiplos contêineres Docker int
 ### 1️⃣ Clonar o Repositório
 Abra um terminal e execute:  
 
-git clone https://github.com/seu-usuario/seu-repositorio.git  
-cd seu-repositorio/servicos  
+1.1 git clone https://github.com/brunofdev/portfolio-microservices.git  
+1.2 cd .\portfolio-microservices\  
+1.3 cd servicos  
 
+# 🧱 2️⃣ Construir o Ambiente (Build)   
+### **PRECISA TER O DOCKER INSTALADO**  
 
-# 🧱 2️⃣ Construir o Ambiente (Build)  
-Verifica se o Docker está ativo  
-**PRECISA TER O DOCKER INSTALADO**  
+Já estando dentro da pasta "servicos" no terminal que estiver utilizando, rode:  
 
-Remove containers e volumes antigos para evitar conflito  
-docker-compose down -v  
+2.1  docker-compose up --build 
 
-Faz o build das imagens Docker (recria do zero)  
-Rode o comando a baixo na pasta em que o docker-compose.yml encontra-se:  
-docker-compose up --build   
-obs: as vezes é necessario ligar manualmente os containers na aba "containers" do Docker Hub  
+Somente este comando rode, e a mágica acontecera, pode demorar alguns minutos,  
+maximo de 20 minutos para que tudo esteja funcionado (De acordo com a internet que você está utilizando)
+
+### obs: as vezes é necessario ligar manualmente os containers na aba "containers" do Docker Hub  
+
+----------------------------------------------------------------  
   
-Geralmente o processo leva em torno de 10 minutos até que todos os serviços liguem e estejam disponiveis para testes.  
-Lembrando que o serviço de email, não enviara emails reais, pois a apikey do brevo (aplicação de email que utilizamos) é pessoal e intransferivel.  
-  
-Documentação de Testes da API (Ambiente Local)  
+Documentação de Testes da API (Ambiente Local)  -> Somente após todos containers docker estar rodando.
 Este guia descreve como testar os endpoints da arquitetura de microsserviços rodando localmente via Docker Compose.  
   
 URL Base de Todas as Requisições: http://localhost:8080 (Todas as chamadas devem ser feitas para o API Gateway)  
   
-## TESTES  
+# TESTES  
 ----------------------------------------------------------------  
-1. Rotas Públicas (Não exigem autenticação)  
-1.1. Cadastrar Novo Usuário  
+## 1. Rotas Públicas (Não exigem autenticação)  
+### 1.1. Cadastrar Novo Usuário  
 Cria um novo usuário   
 Obs: Para criar um usuario com permissão de admin, adicione na requisição dentro do campo "name" o valor @#$ADMIN$#@, por exemplo:  
 
@@ -166,7 +165,7 @@ JSON
 Resposta Esperada: 201 Created  
   
 ----------------------------------------------------------------  
-# 1.2. Fazer Login  
+### 1.2. Fazer Login  
 Autentica um usuário e retorna um token JWT.  
   
 Método: POST  
@@ -203,7 +202,7 @@ A resposta contém um JWT, que será utilizado em requisições que exigem auten
   
 Ação: Copie o token da resposta para usar nos testes seguintes.  
   
-1.3. Listar Todos os Feedbacks  
+### 1.3. Listar Todos os Feedbacks  
 Busca a lista pública de feedbacks.  
   
 Método: GET  
@@ -218,12 +217,12 @@ Resposta Esperada: 200 OK
 Para todas as requisições abaixo, vá até a aba "Authorization" no Postman, selecione "Bearer Token" e cole o JWT obtido no login.  
 ----------------------------------------------------------------  
   
-2.1. Criar um Novo Feedback (Permissão: USER ou ADMIN)  
+### 2.1. Criar um Novo Feedback (Permissão: USER ou ADMIN)  
 Método: POST  
   
 URL: http://localhost:8080/api/feedback/create  
   
-Corpo (Body) -> raw -> JSON:    
+Corpo (Body) -> raw -> JSON:   
   
 JSON  
   
@@ -234,7 +233,7 @@ JSON
 Resposta Esperada: 201 Created.  
 ----------------------------------------------------------------  
   
-2.2. Listar Todos os Usuários (Permissão: ADMIN)  
+### 2.2. Listar Todos os Usuários (Permissão: ADMIN)  
 Nota: Você deve estar logado com um usuário que tenha a role "ADMIN".   
   
   
@@ -244,7 +243,7 @@ URL: http://localhost:8080/api/users/getusers
   
 Resposta Esperada: 200 OK (com a lista de usuários).  
   
-2.3. Deletar um Feedback (Permissão: ADMIN)  
+### 2.3. Deletar um Feedback (Permissão: ADMIN)  
 Nota: Você deve estar logado com um usuário que tenha a role "ADMIN".  
     
 Método: DELETE  
@@ -253,10 +252,10 @@ URL: http://localhost:8080/api/feedback/deletefeedback/{id} (Ex: http://localhos
   
 Resposta Esperada: 200 OK.   
   
-3. Teste de Segurança (Acesso Direto Negado)  
+### 3. Teste de Segurança (Acesso Direto Negado)  
 Este teste deve falhar. Ele prova que seus microsserviços internos estão protegidos pelo SecretHeaderFilter e não podem ser acessados diretamente.  
   
-3.1. Tentativa de Acesso Direto ao user-service  
+### 3.1. Tentativa de Acesso Direto ao user-service  
 Método: GET  
   
 URL: http://localhost:8802/api/users/getusers (Note que estamos usando a porta direta do user-service, não a porta 8080 do Gateway).  
@@ -266,4 +265,13 @@ Resposta Esperada: 403 Forbidden
 Corpo da Resposta (Esperado): Acesso direto nao permitido.  
   
 Se você receber o erro 403, seu filtro de segurança está funcionando perfeitamente!  
+
+----------------------------------------------------------------
+
+# Acessos de Infraestrutura: (Containers precisam estar ligados)  
+  
+Grafana ->  
+Prometheus ->  
+Zipkin -> 
+Eureka -> 
   
