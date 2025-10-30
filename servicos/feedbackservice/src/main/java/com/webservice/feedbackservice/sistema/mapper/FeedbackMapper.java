@@ -33,22 +33,20 @@ public class FeedbackMapper {
                 userRole
         );
     }
-    public List<UsersWithFeedbackDTO> mapUsersWithFeedbackDTO(List<UserDTO> usersDetails, List<Feedback> feedbacks)     {
+    public List<UsersWithFeedbackDTO> mapUsersWithFeedbackDTO(List<UserDTO> usersDetails, List<Feedback> feedbacks){
         Map<String, UserDTO> userMapByUsername = mapListUserDTOtoMap(usersDetails);
-        List<UsersWithFeedbackDTO> feedbacksWithUserDetails = new ArrayList<>();
-        for (Feedback feedback : feedbacks) {
-            String feedbackUsernameUpperCase = feedback.getUserName().toUpperCase(Locale.ROOT);
-            UserDTO userFound = userMapByUsername.get(feedbackUsernameUpperCase);
-            String nome = "Nome não encontrado";
-            UserRole userRole = UserRole.USER;
-            if (userFound != null) {
-                nome = userFound.getNome();
-                userRole = userFound.getUserRole() != null ? userFound.getUserRole() : UserRole.USER;
-            }
-            feedbacksWithUserDetails.add(
-                    mapUsersWithFeedbackDTO(nome, userRole, feedback)
-            );
-        }
-        return feedbacksWithUserDetails;
+        return feedbacks.stream()
+               .map( feedback -> {
+                String feedbackUserNameUpperCase = feedback.getUserName().toUpperCase(Locale.ROOT);
+                UserDTO userFound = userMapByUsername.get(feedbackUserNameUpperCase);
+                String nome = "Nome não encontrado";
+                UserRole userRole = UserRole.USER;
+                if (userFound != null) {
+                    nome = userFound.getNome();
+                    userRole = userFound.getUserRole() != null ? userFound.getUserRole() : UserRole.USER;
+                }
+            return mapUsersWithFeedbackDTO(nome, userRole, feedback);
+            })
+                .collect(Collectors.toList());
     }
 }
