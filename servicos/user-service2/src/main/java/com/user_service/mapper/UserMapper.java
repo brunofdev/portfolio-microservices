@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -33,10 +34,7 @@ public class UserMapper {
         );
     }
     public List<UserDTO> mapListOfUserDTO(List<User> users){
-        List<UserDTO> listUsersDTO = new ArrayList<>();
-        for (User user : users ){
-            listUsersDTO.add(mapUserToUserDTO(user));
-        }
-        return  listUsersDTO;
+       return users.stream().map(user -> mapUserToUserDTO(user))
+               .collect(Collectors.toList());
     }
 }
