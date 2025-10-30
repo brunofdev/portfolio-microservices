@@ -87,11 +87,11 @@ public class FeedbackService {
             throw new FeedbackNotFoundException("Não existem Feedbacks registrados no sistema");
         }
         List<String> userNames = feedbackRepository.findDistinctUserNames();
-        List<UserDTO> userDetails = requestUserDetailsForUserService(userNames);
+        List<UserDTO> userDetails = requestListOfUserDetails(userNames);
         feedbackValidation.validateUserNames(userNames);
         return feedbackMapper.mapUsersWithFeedbackDTO(userDetails, feedbacks);
     }
-    private List<UserDTO> requestUserDetailsForUserService(List<String> userNames) {
+    private List<UserDTO> requestListOfUserDetails(List<String> userNames) {
             WebClient webClient = webClientBuilder.baseUrl(USER_SERVICE_URL).build();
             ApiResponse<List<UserDTO>> apiResponse = webClient.post()
                     .uri("/internal/users/details") // Path corrigido que corresponde ao InternalUserController
