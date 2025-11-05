@@ -15,7 +15,7 @@ public class EmailWelcomeConsumer {
 
     @RabbitListener(queues = QUEUE_NAME)
     public void receiveWelcomeEmailMessage(UserDTO user) {
-        System.out.println("Recebida mensagem para enviar boas-vindas para: " + user.getEmail());
+        System.out.println("Recebida mensagem para enviar boas-vindas para: " + user.email());
         emailService.sendWelcomeEmail(user);
     }
 }

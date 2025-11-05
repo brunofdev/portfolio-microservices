@@ -28,14 +28,14 @@ public class EmailService {
     public void sendWelcomeEmail(UserDTO user) {
         WebClient webClient = webClientBuilder.baseUrl("https://api.brevo.com/v3").build();
 
-        String subject = "Seja bem-vindo(a), " + user.getNome() + "!";
+        String subject = "Seja bem-vindo(a), " + user.nome() + "!";
         // Você pode criar um template HTML mais elaborado aqui
-        String htmlContent = "<html><body><h1>Olá " + user.getNome() + "!</h1><p>Seu cadastro foi realizado com sucesso. Estamos felizes em ter você conosco!</p></body></html>";
+        String htmlContent = "<html><body><h1>Olá " + user.nome() + "!</h1><p>Seu cadastro foi realizado com sucesso. Estamos felizes em ter você conosco!</p></body></html>";
 
         // O corpo da requisição no formato que a API do Brevo espera
         Map<String, Object> body = Map.of(
                 "sender", Map.of("email", senderEmail, "name", "Bruno Fraga Dev"),
-                "to", List.of(Map.of("email", user.getEmail(), "name", user.getNome())),
+                "to", List.of(Map.of("email", user.email(), "name", user.nome())),
                 "subject", subject,
                 "htmlContent", htmlContent
         );
@@ -49,7 +49,7 @@ public class EmailService {
                 .toBodilessEntity() // Não nos importamos com o corpo da resposta de sucesso, apenas que deu 2xx
                 .block(); // Executa a chamada de forma síncrona
 
-        System.out.println("E-mail de boas-vindas enviado para " + user.getEmail() + " via API Brevo.");
+        System.out.println("E-mail de boas-vindas enviado para " + user.email() + " via API Brevo.");
     }
     /**
      * NOVO MÉTODO:
@@ -115,7 +115,7 @@ public class EmailService {
             <p><strong>Isso faz toda a diferença e me ajuda a evoluir!</strong></p>
             <p>Continue contribuindo e ajudando outras pessoas a se desenvolverem. 💪</p>
         </body></html>
-        """, userDTO.getNome()
+        """, userDTO.nome()
         );
 
         // 3. Monta o corpo da requisição para a API do Brevo
@@ -125,8 +125,8 @@ public class EmailService {
                         "name", "Bruno Fraga Dev"
                 ),
                 "to", List.of(Map.of(
-                        "email", userDTO.getEmail(),
-                        "name", userDTO.getNome()
+                        "email", userDTO.email(),
+                        "name", userDTO.nome()
                 )),
                 "subject", subject,
                 "htmlContent", htmlContent
@@ -142,7 +142,7 @@ public class EmailService {
                 .toBodilessEntity()
                 .block();
 
-        System.out.printf("✅ E-mail de notificação enviado para %s (%s)%n", userDTO.getNome(), userDTO.getEmail());
+        System.out.printf("✅ E-mail de notificação enviado para %s (%s)%n", userDTO.nome(), userDTO.email());
     }
 }
 
