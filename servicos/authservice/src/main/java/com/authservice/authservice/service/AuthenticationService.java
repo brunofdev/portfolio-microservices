@@ -58,7 +58,7 @@ public class AuthenticationService {
 
     public Map<String, Object> login(CredentialsDTO credentials) {
         UserDTO userData = validateCredentialsWithUserService(credentials);
-        String token = jwtProvider.generateToken(userData.getUserName(), userData.getRole());
+        String token = jwtProvider.generateToken(userData.userName(), userData.userRole());
         // Retorna um mapa com o token e os dados do usuário
         return Map.of("token", token, "user", userData);
     }

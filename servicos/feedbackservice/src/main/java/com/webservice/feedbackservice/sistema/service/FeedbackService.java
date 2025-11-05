@@ -137,7 +137,7 @@ public class FeedbackService {
         feedbackRepository.delete(feedback);
     }
     public void deleteFeedbacksWithUser(UserDTO userDTO){
-        feedbackRepository.deleteUsersWithFeedback(userDTO.getUserName());
+        feedbackRepository.deleteUsersWithFeedback(userDTO.userName());
     }
 }
 

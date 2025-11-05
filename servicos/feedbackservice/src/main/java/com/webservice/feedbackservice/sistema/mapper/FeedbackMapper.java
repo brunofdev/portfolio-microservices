@@ -1,6 +1,5 @@
 package com.webservice.feedbackservice.sistema.mapper;
 
-import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.dto.UserDTO;
 import com.webservice.feedbackservice.sistema.dto.UsersWithFeedbackDTO;
 import com.webservice.feedbackservice.sistema.entities.Feedback;
@@ -35,7 +34,7 @@ public class FeedbackMapper {
      */
     public Map<String, UserDTO> mapListUserDTOtoMap(List<UserDTO> users) {
         return users.stream().collect(Collectors.toMap(
-                user -> user.getUserName().toUpperCase(Locale.ROOT),
+                user -> user.userName().toUpperCase(Locale.ROOT),
                 user -> user
         ));
     }
@@ -80,8 +79,8 @@ public class FeedbackMapper {
                     UserRole userRole = UserRole.USER;
 
                     if (userFound != null) {
-                        nome = userFound.getNome();
-                        userRole = userFound.getUserRole() != null ? userFound.getUserRole() : UserRole.USER;
+                        nome = userFound.nome();
+                        userRole = userFound.userRole() != null ? userFound.userRole() : UserRole.USER;
                     }
                     return mapUsersWithFeedbackDTO(nome, userRole, feedback);
                 })

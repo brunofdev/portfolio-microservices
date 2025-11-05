@@ -31,7 +31,7 @@ public class AuthenticationController {
         UserDTO user = (UserDTO) authResult.get("user");
 
         // 2. Cria o DTO de usuário para a resposta
-        UserResponseDTO userResponse = new UserResponseDTO(user.getUserName(), user.getRole());
+        UserResponseDTO userResponse = new UserResponseDTO(user.userName(), user.userRole());
 
         // 3. Cria o DTO de resposta final, combinando o token e os dados do usuário
         AuthResponseDTO responseDTO = new AuthResponseDTO(jwtToken, userResponse);

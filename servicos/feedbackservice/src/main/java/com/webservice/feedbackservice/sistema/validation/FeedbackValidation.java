@@ -8,7 +8,6 @@ import com.webservice.feedbackservice.sistema.exceptions.UserDatailsNotFoundExcp
 import com.webservice.feedbackservice.sistema.exceptions.UserNameIsEmptyException;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 @Component
