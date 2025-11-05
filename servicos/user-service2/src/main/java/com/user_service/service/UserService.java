@@ -1,10 +1,6 @@
 package com.user_service.service;
 
-import com.user_service.dto.FeedbackDTO;
-import com.user_service.dto.UserCredentialDTO;
-import com.user_service.dto.UserDTO;
-import com.user_service.dto.UserSignupDTO;
-import com.user_service.entity.UserRole;
+import com.user_service.dto.*;
 import com.user_service.entity.User;
 import com.user_service.exceptions.InvalidCredentialsException;
 import com.user_service.exceptions.UserDontFoundException;
@@ -62,7 +58,7 @@ public class UserService {
         userEmailProducer.sendToQueueNotifyPostedFeedback(userDTO);
     }
     private void sendWelcomeEmailIfApplicable(UserDTO userDTO){
-        if(StringUtils.hasText(userDTO.getEmail())) {
+        if(StringUtils.hasText(userDTO.email())) {
             userEmailProducer.sendToQueueEmailWelcome(userDTO);
         }
     }

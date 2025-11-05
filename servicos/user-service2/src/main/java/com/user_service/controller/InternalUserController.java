@@ -22,8 +22,8 @@ public class InternalUserController {
 
     @PostMapping("/validate-credential")
     public ResponseEntity<ApiResponse<UserDTO>> validateCredentials(@Valid @RequestBody UserCredentialDTO userCredentialDTO){
-        UserDTO userDTO = userService.authenticate(userCredentialDTO);
-        return ResponseEntity.ok().body(ApiResponse.success("Credenciais válidadas", userDTO));
+        UserDTO UserDTO = userService.authenticate(userCredentialDTO);
+        return ResponseEntity.ok().body(ApiResponse.success("Credenciais válidadas", UserDTO));
     }
     @PostMapping("/details")
     public ResponseEntity<ApiResponse<List<UserDTO>>> getUsersDatils(@RequestBody List<String> userNames){
@@ -32,7 +32,7 @@ public class InternalUserController {
     }
     @GetMapping("/by-username/{userName}")
     public ResponseEntity<ApiResponse<UserDTO>> getUserDetailsByUsername(@PathVariable String userName){
-        UserDTO userDTO = userService.findUserDtoByUserName(userName); //adicionar o medo de verificacao do service aqui e remover o true
-        return ResponseEntity.ok().body(ApiResponse.success("Usuario encotrado", userDTO));
+        UserDTO UserDTO = userService.findUserDtoByUserName(userName); //adicionar o medo de verificacao do service aqui e remover o true
+        return ResponseEntity.ok().body(ApiResponse.success("Usuario encotrado", UserDTO));
     }
 }

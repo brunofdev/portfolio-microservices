@@ -1,9 +1,8 @@
 package com.user_service.controller;
 
-import com.user_service.dto.apiresponse.ApiResponse;
 import com.user_service.dto.UserDTO;
+import com.user_service.dto.apiresponse.ApiResponse;
 import com.user_service.dto.UserSignupDTO;
-import com.user_service.entity.User;
 import com.user_service.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

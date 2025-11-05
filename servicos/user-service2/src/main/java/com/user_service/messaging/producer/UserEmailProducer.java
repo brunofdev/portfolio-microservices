@@ -1,7 +1,6 @@
 package com.user_service.messaging.producer;
 
 import com.user_service.dto.UserDTO;
-import com.user_service.entity.User;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

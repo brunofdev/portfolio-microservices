@@ -3,11 +3,8 @@ package com.user_service.mapper;
 import com.user_service.dto.UserDTO;
 import com.user_service.dto.UserSignupDTO;
 import com.user_service.entity.User;
-import com.user_service.entity.UserRole;
 import org.springframework.stereotype.Component;
 
-import javax.management.relation.Role;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +21,7 @@ public class UserMapper {
     }
 
     public UserDTO mapUserToUserDTO(User user){
-        return new UserDTO
-                (
+        return new UserDTO(
                 user.getId(),
                 user.getName(),
                 user.getUserName(),
